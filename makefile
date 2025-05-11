@@ -8,3 +8,7 @@ compose: ## Building and Running apps with docker-compose
 	docker compose down --remove-orphans || true
 	docker compose -f "docker-compose.yml" up --build
 	@echo "Application is running"
+
+test: ## Running a test
+	@echo "Test application with docker"
+	docker-compose run app pytest
