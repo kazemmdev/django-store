@@ -1,0 +1,41 @@
+services:
+  app:
+    build: .
+    container_name: app
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/usr/src/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.4.3
+    container_name: mysql
+    platform: linux/x86_64
+    env_file: .env
+    restart: unless-stopped
+    environment:
+      - MYSQL_USER=$DB_USERNAME
+      - MYSQL_DATABASE=$DB_DATABASE
+      - MYSQL_PASSWORD=$DB_PASSWORD
+      - MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command:
+      - --mysql-native-password=ON
+      - --log-error-verbosity=3
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  mysql_data:

@@ -1,0 +1,16 @@
+.idea
+.vscode
+.DS_Store
+
+
+vendor
+node_modules
+dist
+
+.env
+*.log
+
+Dockerfile
+.dockerignore
+*.md
+.git
